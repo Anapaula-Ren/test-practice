@@ -1,11 +1,20 @@
-export function BookForm() {
+import type { RefObject } from "react"
+
+type BookFormProps = {
+  submitBook: (formData: FormData) => void
+  isPending: boolean
+  formMessage: string
+  titleInputRef: RefObject<HTMLInputElement | null>
+}
+
+export function BookForm({
+  submitBook,
+  isPending,
+  formMessage,
+  titleInputRef,
+}: BookFormProps) {
   return (
-    <form
-      className="book-form"
-      onSubmit={(event) => {
-        event.preventDefault()
-      }}
-    >
+    <form className="book-form" action={submitBook}>
       <div className="book-form__intro">
         <h2>New book</h2>
         <p>Complete the fields to add a book to the reading list.</p>
@@ -15,6 +24,7 @@ export function BookForm() {
         <div className="field">
           <label htmlFor="book-title">Title</label>
           <input
+            ref={titleInputRef}
             id="book-title"
             name="title"
             type="text"
@@ -45,8 +55,10 @@ export function BookForm() {
         </div>
       </div>
 
-      <button className="button" type="submit">
-        Add book
+      {formMessage && <p aria-live="polite">{formMessage}</p>}
+
+      <button className="button" type="submit" disabled={isPending}>
+        {isPending ? "Adding..." : "Add book"}
       </button>
     </form>
   )
